@@ -18,6 +18,7 @@ RUN mkdir -p /opt/spire/bin
 # SPIRE Server
 FROM spire-base AS spire-server
 COPY --from=builder /spire/bin/spire-server /opt/spire/bin/spire-server
+COPY --from=builder /spire/plugins/tpm_attestor_server /opt/spire/bin/tpm_attestor_server
 WORKDIR /opt/spire
 ENTRYPOINT ["/usr/bin/dumb-init", "/opt/spire/bin/spire-server", "run"]
 CMD []
@@ -25,6 +26,8 @@ CMD []
 # SPIRE Agent
 FROM spire-base AS spire-agent
 COPY --from=builder /spire/bin/spire-agent /opt/spire/bin/spire-agent
+COPY --from=builder /spire/plugins/tpm_attestor_agent /opt/spire/bin/tpm_attestor_agent
+
 WORKDIR /opt/spire
 ENTRYPOINT ["/usr/bin/dumb-init", "/opt/spire/bin/spire-agent", "run"]
 CMD []
