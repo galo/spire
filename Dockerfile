@@ -1,7 +1,7 @@
 # Build stage
 ARG goversion
-FROM golang:${goversion}-alpine as builder
-RUN apk add build-base git mercurial
+FROM golang:${goversion} as builder
+RUN apt install git mercurial
 ADD go.mod /spire/go.mod
 ADD proto/spire/go.mod /spire/proto/spire/go.mod
 RUN cd /spire && go mod download
@@ -10,9 +10,8 @@ WORKDIR /spire
 RUN make build
 
 # Common base
-FROM alpine AS spire-base
-RUN apk --no-cache add dumb-init
-RUN apk --no-cache add ca-certificates
+FROM ubuntu AS spire-base
+RUN apt update && apt install dumb-init -y
 RUN mkdir -p /opt/spire/bin
 
 # SPIRE Server
