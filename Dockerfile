@@ -11,7 +11,7 @@ RUN make build
 
 # Common base
 FROM ubuntu AS spire-base
-RUN apt update && apt install dumb-init -y
+RUN apt update && apt install dumb-init libtspi-dev -y
 RUN mkdir -p /opt/spire/bin
 
 # SPIRE Server
@@ -26,6 +26,8 @@ CMD []
 FROM spire-base AS spire-agent
 COPY --from=builder /spire/bin/spire-agent /opt/spire/bin/spire-agent
 COPY --from=builder /spire/plugins/tpm_attestor_agent /opt/spire/bin/tpm_attestor_agent
+# TODO: This is just for testing
+COPY --from=builder /spire/plugins/get_tpm_pubhash /opt/spire/bin/get_tpm_pubhash
 
 WORKDIR /opt/spire
 ENTRYPOINT ["/usr/bin/dumb-init", "/opt/spire/bin/spire-agent", "run"]
