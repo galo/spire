@@ -18,6 +18,10 @@ RUN mkdir -p /opt/spire/bin
 FROM spire-base AS spire-server
 COPY --from=builder /spire/bin/spire-server /opt/spire/bin/spire-server
 COPY --from=builder /spire/plugins/tpm_attestor_server /opt/spire/bin/tpm_attestor_server
+
+# Add: CA certs for TPM
+ADD  etc/certs /opt/spire/.data/certs
+
 WORKDIR /opt/spire
 ENTRYPOINT ["/usr/bin/dumb-init", "/opt/spire/bin/spire-server", "run"]
 CMD []
